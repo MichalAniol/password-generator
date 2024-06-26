@@ -15,12 +15,14 @@ const dom = (function () {
     type StylesT = StyleT[]
     const setAllStyles = (styles: StylesT) => styles.forEach((s: StyleT) => setStyle(s[0], s[1], s[2]))
 
-    type AttributeNamesT = 'x' | 'y' | 'width' | 'height' | 'fill' | 'stroke' | 'stroke-width' | 'viewBox'
+    type AttributeNamesT = 'x' | 'y' | 'width' | 'height' | 'fill' | 'stroke' | 'stroke-width' | 'viewBox' | 'data-num'
     const setAttribute = (element: Element | HTMLElement | SVGRectElement, attribute: AttributeNamesT, value: string) => element.setAttribute(attribute as any, value)
 
     type AttributeT = [element: Element | HTMLElement | SVGRectElement, attribute: AttributeNamesT, value: string]
     type AttributesT = AttributeT[]
     const setAllAttributes = (attributes: AttributesT) => attributes.forEach((a: AttributeT) => a[0].setAttribute(a[1], a[2]))
+
+    const getAttribute = (element: Element | HTMLElement | SVGRectElement, attribute: AttributeNamesT) => element.getAttribute(attribute as any)
 
     const disable = (elem: HTMLElement | HTMLInputElement | HTMLButtonElement) => elem.setAttribute('disabled', '')
     const enable = (elem: HTMLElement | HTMLInputElement | HTMLButtonElement) => elem.removeAttribute('disabled')
@@ -51,6 +53,11 @@ const dom = (function () {
     type NsNamesT = 'rect'
     const newNS = (name: NsNamesT) => document.createElementNS(xmlns, 'rect')
 
+    type ElemNamesT = 'button' | 'div'
+    const newElem = (name: ElemNamesT) => document.createElement(name)
+
+    const append = (parent: HTMLElement | HTMLInputElement | HTMLButtonElement, elem: HTMLElement | HTMLInputElement | HTMLButtonElement) => parent.append(elem)
+
     return {
         byId,
         byQuery,
@@ -61,6 +68,7 @@ const dom = (function () {
         setAllStyles,
         setAttribute,
         setAllAttributes,
+        getAttribute,
         disable,
         enable,
         check,
@@ -72,5 +80,7 @@ const dom = (function () {
         colors,
         add,
         newNS,
+        newElem,
+        append,
     }
 }())
