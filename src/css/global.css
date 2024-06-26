@@ -213,11 +213,6 @@
     --section_title_font_size: 42px;
     --list_width: 200px;
     --list_item_height: 30px;
-
-    --qrcode_color: #ddd;
-    --qrcode_background_color: #181818;
-
-    --img_width: 50vw;
 }
 
 @media screen and (prefers-color-scheme: dark) {
@@ -236,6 +231,8 @@
         --prime_color: #aaa;
         --second_color: #888;
         --background_color: #121212;
+        --prime_button: #333;
+        --second_button: #555;
         --line_color: #444;
 
         --outline_color: red;
@@ -263,6 +260,8 @@
         --prime_color: #313131;
         --second_color: #4c4c4c;
         --background_color: #fff;
+        --prime_button: #ddd;
+        --second_button: #aaa;
         --line_color: #888;
 
         --outline_color: red;

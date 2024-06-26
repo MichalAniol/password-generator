@@ -20,7 +20,10 @@
         "src/storage.ts",
         "src/dom.ts",
         "src/core.ts",
-        "src/_index.ts",
+        "src/program/events.ts",
+        "src/program/dom.ts",
+        "src/program/init.ts",
+        "src/program/_index.ts",
     ],
     "exclude": [
         "node_modules"

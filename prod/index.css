@@ -213,11 +213,6 @@
     --section_title_font_size: 42px;
     --list_width: 200px;
     --list_item_height: 30px;
-
-    --qrcode_color: #ddd;
-    --qrcode_background_color: #181818;
-
-    --img_width: 50vw;
 }
 
 @media screen and (prefers-color-scheme: dark) {
@@ -236,6 +231,8 @@
         --prime_color: #aaa;
         --second_color: #888;
         --background_color: #121212;
+        --prime_button: #333;
+        --second_button: #555;
         --line_color: #444;
 
         --outline_color: red;
@@ -263,6 +260,8 @@
         --prime_color: #313131;
         --second_color: #4c4c4c;
         --background_color: #fff;
+        --prime_button: #ddd;
+        --second_button: #aaa;
         --line_color: #888;
 
         --outline_color: red;
@@ -292,7 +291,113 @@
     user-select: none;
 }
 
-.test {
-    font-family: var(--font);
-    font-size: 40px;
+h3 {
+    margin: 26px 0 6px 0;
+}
+
+button {
+    background-color: var(--prime_button);
+    color: var(--prime_color);
+    font-style: var(--font);
+    font-size: var(--font_size);
+    border: 1px solid var(--prime_color);
+    padding: 3px 12px;
+    border-radius: var(--separator_small);
+    margin: 0 3px;
+}
+
+.btn-on-off {
+    background-color: var(--on_second_color);
+}
+
+.simple-btn {
+    width: 50px;
+}
+
+.flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 80vw;
+}
+
+.center {
+    width: min-content;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    white-space: nowrap;
+}
+
+.line {
+    margin-bottom: 6px;
+}
+
+.mb16 {
+    margin-bottom: 16px;
+}
+
+
+/** based on: https://range-input-css.netlify.app/ **/
+/*********** Baseline, reset styles ***********/
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+    width: 500px;
+}
+
+/* Removes default focus */
+input[type="range"]:focus {
+    outline: none;
+}
+
+/******** Chrome, Safari, Opera and Edge Chromium styles ********/
+/* slider track */
+input[type="range"]::-webkit-slider-runnable-track {
+    background-color: var(--on_second_color);
+    border-radius: 4px;
+    height: 8px;
+}
+
+/* slider thumb */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    /* Override default look */
+    appearance: none;
+    margin-top: -11px;
+    /* Centers thumb on the track */
+    background-color: var(--prime_color);
+    border-radius: 15px;
+    height: 20px;
+    width: 20px;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb {
+    outline: 3px solid var(--prime_color);
+    outline-offset: 0.125rem;
+}
+
+/*********** Firefox styles ***********/
+/* slider track */
+input[type="range"]::-moz-range-track {
+    background-color: var(--on_second_color);
+    border-radius: 4px;
+    height: 8px;
+}
+
+/* slider thumb */
+input[type="range"]::-moz-range-thumb {
+    background-color: var(--prime_color);
+    border: none;
+    /*Removes extra border that FF applies*/
+    border-radius: 15px;
+    height: 20px;
+    width: 20px;
+}
+
+input[type="range"]:focus::-moz-range-thumb {
+    outline: 3px solid var(--prime_color);
+    outline-offset: 0.125rem;
 }

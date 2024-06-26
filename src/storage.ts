@@ -5,22 +5,49 @@ const checked = {
 type CheckedKeyT = keyof typeof checked
 type CheckedValuesT = typeof checked[CheckedKeyT]
 
+type NamesValueTypeKeysT = keyof NamesValueTypeT
+type AllNamesValueTypeT = NamesValueTypeT[NamesValueTypeKeysT]
+
 type NamesValueTypeT = {
-    test: string,
+    azSmall: CheckedKeyT,
+    azBig: CheckedKeyT,
+    numbers: CheckedKeyT,
+    specials: CheckedKeyT[],
+    length: number,
 }
 
 const getStorage = async () => {
     const names = {
-        test: 'test',
+        azSmall: 'azSmall',
+        azBig: 'azBig',
+        numbers: 'numbers',
+        specials: 'specials',
+        length: 'length',
     } as const
     type DataNamesKeysT = keyof typeof names
     type DataNamesValuesT = typeof names[DataNamesKeysT]
 
     const defaultData = {
-        test: 'test-test',
+        azSmall: checked.yes,
+        azBig: checked.yes,
+        numbers: checked.yes,
+        specials: [
+            checked.yes, checked.yes, checked.yes, checked.yes,
+            checked.yes, checked.yes, checked.yes, checked.yes,
+            checked.yes, checked.yes, checked.yes, checked.yes,
+            checked.yes, checked.yes, checked.yes, checked.yes,
+            checked.yes, checked.yes, checked.yes, checked.yes,
+            checked.yes, checked.yes, checked.yes, checked.yes,
+            checked.no, checked.no, checked.no, checked.no,
+            checked.no, checked.no, checked.no, checked.no,
+        ],
+        length: 8,
     } as const
+    type DefaultDataKeysT = keyof typeof defaultData
+    type DefaultDataValuesT = typeof defaultData[DefaultDataKeysT]
 
-    const isValidJSONStringify = (str: string | string[]) => {
+
+    const isValidJSONStringify = (str: string | string[] | number) => {
         try {
             JSON.stringify(str)
             return true;
@@ -29,7 +56,8 @@ const getStorage = async () => {
         }
     }
 
-    const set = <K extends keyof NamesValueTypeT, V extends NamesValueTypeT[K]>(key: DataNamesValuesT, value: V) => {
+
+    const set = (key: DataNamesValuesT, value: AllNamesValueTypeT) => {
         if (isValidJSONStringify(value)) {
             localStorage.setItem(key, JSON.stringify(value))
         } else {
@@ -61,7 +89,7 @@ const getStorage = async () => {
         const list = Object.keys(names)
         list.forEach((k: string) => {
             const data = get(k as DataNamesValuesT)
-            if (!data && defaultData[k as keyof NamesValueTypeT]) set(k as DataNamesValuesT, defaultData[k as keyof NamesValueTypeT])
+            if (!data && defaultData[k as keyof typeof defaultData]) set(k as DataNamesValuesT, defaultData[k as keyof typeof defaultData] as AllNamesValueTypeT)
         })
     }
     initData()

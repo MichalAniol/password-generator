@@ -29,7 +29,33 @@
         <link rel='stylesheet' type='text/css' href='./css/index.css'>
     </head>
     <body>
-        <file src="test.html"></file>
+        <h1 class="center">Password Generator</h1>
+
+        <h3 class="center">normal</h3>
+        <div class="center">
+            <div class="flex">
+                <button id="az-small">a-z</button>
+                <button id="az-big">A-Z</button>
+                <button id="numbers">0-9</button>
+            </div>
+        </div>
+
+        <h3 class="center">specials</h3>
+        <div class="center">
+            <div id="specials" class="mb16">
+            </div>
+            <div class="flex">
+                <button id="all-specials">all</button>
+                <button id="common-specials">common</button>
+                <button id="none-specials">none</button>
+            </div>
+        </div>
+
+        <h3 class="center"><span>length: </span><span id="length-value">1</span> </h3>
+        <div class="center">
+            <input type="range" id="range-input" min="8" max="32" step="1">
+        </div>
+        <!-- <file src="test.html"></file> -->
 
         <script type="module" src="./index.js"></script>
     </body>
