@@ -1,10 +1,16 @@
-# Podkład
+# Password Generator
 
-## instalacja
+## urzucie
+
+Po wybraniu ustawień hasła klikamy ```generate password```
+
+## kod
+
+### instalacja
 
 Z terminala wchodzimy w katalog projektu i uruchamiany ```npm i```, powinny się zainstalować wszystkie ```./node moules```
 
-## uruchamianie
+### uruchamianie
 
 Otwieramy trzy okna terminala, wszystkie w katalogu projektu. najłatwiej z użyciem VSCode/VSCodium. W każdym kolejno wpisujemy:
 
