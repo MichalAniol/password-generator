@@ -11,7 +11,7 @@
         "preserveConstEnums": false,
         "sourceMap": false,
         "downlevelIteration": false,
-        "outFile": "doc/index.js",
+        "outFile": "docs/index.js",
         "module": "AMD",
         "moduleResolution": "node"
     },
