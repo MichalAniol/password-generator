@@ -28,6 +28,8 @@ type CoreT = {
         message: HTMLElement
         generatePassword: HTMLElement
         password: HTMLElement
+        copy: HTMLElement
+        afterCopy: HTMLElement
     },
     events: EventsT | null,
     validation: () => void | null
@@ -66,6 +68,8 @@ const core = (function () {
             message: byId('message'),
             generatePassword: byId('generate'),
             password: byId('password'),
+            copy: byId('copy'),
+            afterCopy: byId('after-copy'),
         },
         events: null,
         validation: null,

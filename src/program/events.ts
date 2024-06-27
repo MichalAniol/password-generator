@@ -8,6 +8,7 @@ type EventsT = {
     specialNoneClick: (event: Event) => void
     lengthInput: (elem: HTMLElement) => (event: Event) => void
     generatePasswordBtnClick: () => void
+    CopyToClipboard: () => void
 }
 
 const getEvents = () => (function () {
@@ -104,6 +105,27 @@ const getEvents = () => (function () {
         core.dom.password.innerHTML = password
     }
 
+    const CopyToClipboard = () => {
+        if (window.getSelection) {
+            if (core.dom.password.innerHTML.length === 0) return
+
+            const range = document.createRange()
+            range.selectNode(core.dom.password)
+            window.getSelection().addRange(range)
+            document.execCommand('copy')
+
+            setTimeout(() => {
+                range.selectNode(core.dom.afterCopy)
+                window.getSelection().addRange(range)
+            }, 30)
+
+            core.dom.copy.innerHTML = 'c o p i e d &nbsp; ! ! !'
+            setTimeout(() => {
+                core.dom.copy.innerHTML = 'copy'
+            }, 500)
+        }
+    }
+
 
     const result: EventsT = {
         azSmallClick,
@@ -115,6 +137,7 @@ const getEvents = () => (function () {
         specialNoneClick,
         lengthInput,
         generatePasswordBtnClick,
+        CopyToClipboard,
     }
 
     return result
