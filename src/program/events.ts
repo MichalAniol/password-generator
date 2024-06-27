@@ -1,12 +1,13 @@
 type EventsT = {
-    azSmallEvent: (event: Event) => void
-    azBigEvent: (event: Event) => void
-    numberEvent: (event: Event) => void
-    specialEvent: (num: number) => (event: Event) => void
-    specialAllEvent: (event: Event) => void
-    specialCommonEvent: (event: Event) => void
-    specialNoneEvent: (event: Event) => void
-    lengthEvent: (elem: HTMLElement) => (event: Event) => void
+    azSmallClick: (event: Event) => void
+    azBigClick: (event: Event) => void
+    numberClick: (event: Event) => void
+    specialClick: (num: number) => (event: Event) => void
+    specialAllClick: (event: Event) => void
+    specialCommonClick: (event: Event) => void
+    specialNoneClick: (event: Event) => void
+    lengthInput: (elem: HTMLElement) => (event: Event) => void
+    generatePasswordBtnClick: () => void
 }
 
 const getEvents = () => (function () {
@@ -25,11 +26,11 @@ const getEvents = () => (function () {
         core.store.set(storeName, newData)
     }
 
-    const azSmallEvent = change(core.store.names.azSmall)
-    const azBigEvent = change(core.store.names.azBig)
-    const numberEvent = change(core.store.names.numbers)
+    const azSmallClick = change(core.store.names.azSmall)
+    const azBigClick = change(core.store.names.azBig)
+    const numberClick = change(core.store.names.numbers)
 
-    const specialEvent = (num: number) => (event: Event) => {
+    const specialClick = (num: number) => (event: Event) => {
         const target = event.target as HTMLInputElement
 
         const data = getAttribute(target, 'data-num')
@@ -43,7 +44,7 @@ const getEvents = () => (function () {
         core.store.set(core.store.names.specials, storeData)
     }
 
-    const specialAllEvent = () => {
+    const specialAllClick = () => {
         const storeData: CheckedKeyT[] = []
         core.dom.specials.forEach((elem) => {
             setAttribute(elem, 'data-num', checked.yes)
@@ -53,7 +54,7 @@ const getEvents = () => (function () {
         core.store.set(core.store.names.specials, storeData)
     }
 
-    const specialCommonEvent = () => {
+    const specialCommonClick = () => {
         const storeData: CheckedKeyT[] = []
         core.dom.specials.forEach((elem, i) => {
             const char = core.data.specials.allTab[i]
@@ -68,7 +69,7 @@ const getEvents = () => (function () {
         core.store.set(core.store.names.specials, storeData)
     }
 
-    const specialNoneEvent = () => {
+    const specialNoneClick = () => {
         const storeData: CheckedKeyT[] = []
         core.dom.specials.forEach((elem) => {
             setAttribute(elem, 'data-num', checked.no)
@@ -78,21 +79,30 @@ const getEvents = () => (function () {
         core.store.set(core.store.names.specials, storeData)
     }
 
-    const lengthEvent = (elem: HTMLElement) => (event: Event) => {
+    const lengthInput = (elem: HTMLElement) => (event: Event) => {
         const target = event.target as HTMLInputElement
         elem.innerHTML = target.value
 
         core.store.set(core.store.names.length, Number(target.value))
     }
+
+    const generatePasswordBtnClick = () => {
+        const password = generate().getPassword()
+
+        core.dom.password.innerHTML = password
+    }
+
+
     const result: EventsT = {
-        azSmallEvent,
-        azBigEvent,
-        numberEvent,
-        specialEvent,
-        specialAllEvent,
-        specialCommonEvent,
-        specialNoneEvent,
-        lengthEvent,
+        azSmallClick,
+        azBigClick,
+        numberClick,
+        specialClick,
+        specialAllClick,
+        specialCommonClick,
+        specialNoneClick,
+        lengthInput,
+        generatePasswordBtnClick,
     }
 
     return result

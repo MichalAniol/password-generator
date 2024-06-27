@@ -179,12 +179,15 @@ const core = (function () {
             azBig: 'QWERTYUIOPASDFGHJKLZXCVBNM',
             numbers: '1234567890',
             specials: {
-                all: '!@#$%^&*()-=_+[]{}<>,.;:\'"\\|\`~/?',
+                all: '!@#$%^&*()-=_+[]{}\<\>,.;:\'"\\|\`~/?',
                 common: '!@#$%^&*()-=_+[]{}<>,.;:',
                 chosen: [],
                 commonTab: [],
                 allTab: [],
             },
+            azSmallTab: [],
+            azBigTab: [],
+            numbersTab: [],
         },
         dom: {
             azSmall: byId('az-small'),
@@ -196,9 +199,20 @@ const core = (function () {
             noneSpecials: byId('none-specials'),
             lengthValue: byId('length-value'),
             lengthInput: byId('range-input'),
+            generatePassword: byId('generate'),
+            password: byId('password'),
         },
         events: null,
     };
+    for (let i = 0; i < res.data.azSmall.length; ++i) {
+        res.data.azSmallTab[i] = res.data.azSmall[i];
+    }
+    for (let i = 0; i < res.data.azBig.length; ++i) {
+        res.data.azBigTab[i] = res.data.azBig[i];
+    }
+    for (let i = 0; i < res.data.numbers.length; ++i) {
+        res.data.numbersTab[i] = res.data.numbers[i];
+    }
     for (let i = 0; i < res.data.specials.all.length; ++i) {
         res.data.specials.allTab[i] = res.data.specials.all[i];
     }
@@ -206,6 +220,115 @@ const core = (function () {
         res.data.specials.commonTab[i] = res.data.specials.common[i];
     }
     return res;
+}());
+const generate = () => (function () {
+    const getNumber = (check) => check === checked.yes ? 1 : 0;
+    const getSume = (result) => result.azSmall + result.azBig + result.numbers + result.specials;
+    const getBiggestKey = (result) => {
+        let maxKey = null;
+        let maxValue = -Infinity;
+        for (const key in result) {
+            if (result[key] > maxValue) {
+                maxValue = result[key];
+                maxKey = key;
+            }
+        }
+        return maxKey;
+    };
+    const getNumberActiveTabs = (azSmall, azBig, numbers, specials) => {
+        let numberSpecials = 0;
+        specials.forEach((s) => {
+            if (s === checked.yes)
+                numberSpecials++;
+        });
+        const length = core.store.get(core.store.names.length);
+        const numberActive = getNumber(azSmall) + getNumber(azBig) + getNumber(numbers) + (numberSpecials > 0 ? 1 : 0);
+        let normalLength = Math.ceil(length / numberActive);
+        let specialLength = 0;
+        if (numberSpecials > 0) {
+            if (numberSpecials >= normalLength) {
+                specialLength = normalLength;
+            }
+            else {
+                specialLength = numberSpecials;
+                const numberNormalActive = getNumber(azSmall) + getNumber(azBig) + getNumber(numbers);
+                normalLength = Math.ceil((length - specialLength) / numberNormalActive);
+            }
+        }
+        const result = {
+            azSmall: azSmall === checked.yes ? normalLength : 0,
+            azBig: azBig === checked.yes ? normalLength : 0,
+            numbers: numbers === checked.yes ? normalLength : 0,
+            specials: specialLength,
+        };
+        let sume = getSume(result);
+        while (sume > length) {
+            const key = getBiggestKey(result);
+            result[key]--;
+            sume = getSume(result);
+        }
+        return result;
+    };
+    const collectTabs = () => {
+        const azSmallData = core.store.get(core.store.names.azSmall);
+        const azBigData = core.store.get(core.store.names.azBig);
+        const numbersData = core.store.get(core.store.names.numbers);
+        const specialsData = core.store.get(core.store.names.specials);
+        core.data.specials.chosen = [];
+        specialsData.forEach((s, i) => {
+            if (s === checked.yes) {
+                core.data.specials.chosen.push(core.data.specials.allTab[i]);
+            }
+        });
+        const numberActiveTabs = getNumberActiveTabs(azSmallData, azBigData, numbersData, specialsData);
+        const result = {
+            tabs: {
+                azSmall: azSmallData ? core.data.azSmallTab : [],
+                azBig: azBigData ? core.data.azBigTab : [],
+                numbers: numbersData ? core.data.numbersTab : [],
+                specials: core.data.specials.chosen,
+            },
+            num: numberActiveTabs,
+        };
+        return result;
+    };
+    const getRandomElements = (tab, length) => {
+        let result = [];
+        let availableElements = [...tab];
+        while (result.length < length) {
+            if (availableElements.length === 0) {
+                availableElements = [...tab];
+            }
+            const randomIndex = Math.floor(Math.random() * availableElements.length);
+            const element = availableElements[randomIndex];
+            result.push(element);
+            availableElements.splice(randomIndex, 1);
+        }
+        return result;
+    };
+    const getPassword = () => {
+        const data = collectTabs();
+        const azSmall = getRandomElements(data.tabs.azSmall, data.num.azSmall);
+        const azBig = getRandomElements(data.tabs.azBig, data.num.azBig);
+        const numbers = getRandomElements(data.tabs.numbers, data.num.numbers);
+        const specials = getRandomElements(data.tabs.specials, data.num.specials);
+        const specialsOk = specials.map(s => {
+            if (s === '<')
+                return '&lt;';
+            if (s === '>')
+                return '&gt;';
+            return s;
+        });
+        const all = azSmall.concat(azBig).concat(numbers).concat(specialsOk);
+        const length = core.store.get(core.store.names.length);
+        const password = getRandomElements(getRandomElements(getRandomElements(all, length), length), length);
+        const result = password.join('');
+        return result;
+    };
+    const result = {
+        getPassword
+    };
+    return result;
 }());
 const getEvents = () => (function () {
     const { getAttribute, setAttribute } = dom;
@@ -217,10 +340,10 @@ const getEvents = () => (function () {
         target.style.backgroundColor = data === checked.no ? 'var(--on_second_color)' : 'var(--background_color)';
         core.store.set(storeName, newData);
     };
-    const azSmallEvent = change(core.store.names.azSmall);
-    const azBigEvent = change(core.store.names.azBig);
-    const numberEvent = change(core.store.names.numbers);
-    const specialEvent = (num) => (event) => {
+    const azSmallClick = change(core.store.names.azSmall);
+    const azBigClick = change(core.store.names.azBig);
+    const numberClick = change(core.store.names.numbers);
+    const specialClick = (num) => (event) => {
         const target = event.target;
         const data = getAttribute(target, 'data-num');
         const newData = data === checked.yes ? checked.no : checked.yes;
@@ -230,7 +353,7 @@ const getEvents = () => (function () {
         storeData[num] = newData;
         core.store.set(core.store.names.specials, storeData);
     };
-    const specialAllEvent = () => {
+    const specialAllClick = () => {
         const storeData = [];
         core.dom.specials.forEach((elem) => {
             setAttribute(elem, 'data-num', checked.yes);
@@ -239,7 +362,7 @@ const getEvents = () => (function () {
         });
         core.store.set(core.store.names.specials, storeData);
     };
-    const specialCommonEvent = () => {
+    const specialCommonClick = () => {
         const storeData = [];
         core.dom.specials.forEach((elem, i) => {
             const char = core.data.specials.allTab[i];
@@ -251,7 +374,7 @@ const getEvents = () => (function () {
         });
         core.store.set(core.store.names.specials, storeData);
     };
-    const specialNoneEvent = () => {
+    const specialNoneClick = () => {
         const storeData = [];
         core.dom.specials.forEach((elem) => {
             setAttribute(elem, 'data-num', checked.no);
@@ -260,20 +383,25 @@ const getEvents = () => (function () {
         });
         core.store.set(core.store.names.specials, storeData);
     };
-    const lengthEvent = (elem) => (event) => {
+    const lengthInput = (elem) => (event) => {
         const target = event.target;
         elem.innerHTML = target.value;
         core.store.set(core.store.names.length, Number(target.value));
     };
+    const generatePasswordBtnClick = () => {
+        const password = generate().getPassword();
+        core.dom.password.innerHTML = password;
+    };
     const result = {
-        azSmallEvent,
-        azBigEvent,
-        numberEvent,
-        specialEvent,
-        specialAllEvent,
-        specialCommonEvent,
-        specialNoneEvent,
-        lengthEvent,
+        azSmallClick,
+        azBigClick,
+        numberClick,
+        specialClick,
+        specialAllClick,
+        specialCommonClick,
+        specialNoneClick,
+        lengthInput,
+        generatePasswordBtnClick,
     };
     return result;
 }());
@@ -313,28 +441,28 @@ const init = () => (function () {
     const azSmallData = core.store.get(core.store.names.azSmall);
     setValue(azSmallData, core.dom.azSmall);
     setAttribute(core.dom.azSmall, 'data-num', azSmallData);
-    add(core.dom.azSmall, 'click', core.events.azSmallEvent);
+    add(core.dom.azSmall, 'click', core.events.azSmallClick);
     const azBigData = core.store.get(core.store.names.azBig);
     setValue(azBigData, core.dom.azBig);
     setAttribute(core.dom.azBig, 'data-num', azBigData);
-    add(core.dom.azBig, 'click', core.events.azBigEvent);
+    add(core.dom.azBig, 'click', core.events.azBigClick);
     const numbersData = core.store.get(core.store.names.numbers);
     setValue(numbersData, core.dom.numbers);
     setAttribute(core.dom.numbers, 'data-num', numbersData);
-    add(core.dom.numbers, 'click', core.events.numberEvent);
+    add(core.dom.numbers, 'click', core.events.numberClick);
     const specialsData = core.store.get(core.store.names.specials);
     core.dom.specials.forEach((btn, i) => {
         setValue(specialsData[i], btn);
-        add(btn, 'click', core.events.specialEvent(i));
+        add(btn, 'click', core.events.specialClick(i));
     });
-    add(core.dom.allSpecials, 'click', core.events.specialAllEvent);
-    add(core.dom.commonSpecials, 'click', core.events.specialCommonEvent);
-    add(core.dom.noneSpecials, 'click', core.events.specialNoneEvent);
+    add(core.dom.allSpecials, 'click', core.events.specialAllClick);
+    add(core.dom.commonSpecials, 'click', core.events.specialCommonClick);
+    add(core.dom.noneSpecials, 'click', core.events.specialNoneClick);
     const lengthData = core.store.get(core.store.names.length);
     core.dom.lengthInput.value = lengthData;
-    add(core.dom.lengthInput, 'input', core.events.lengthEvent(core.dom.lengthValue));
+    add(core.dom.lengthInput, 'input', core.events.lengthInput(core.dom.lengthValue));
     core.dom.lengthValue.innerHTML = lengthData;
-    return {};
+    add(core.dom.generatePassword, 'click', core.events.generatePasswordBtnClick);
 }());
 (function () {
     getStorage().then((store) => {

@@ -404,3 +404,17 @@ input[type="range"]:focus::-moz-range-thumb {
     outline: 3px solid var(--prime_color);
     outline-offset: 0.125rem;
 }
+
+.password {
+    min-width: 500px;
+    height: 70px;
+    line-height: 70px;
+    font-size: var(--font_big_size);
+    font-family: var(--medium_font);
+    text-align: center;
+    border: 2px solid var(--line_color);
+    border-radius: 10px;
+    user-select: text;
+    margin: 24px 0;
+    padding: 0 32px;
+}

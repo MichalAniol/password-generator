@@ -11,6 +11,9 @@ type CoreT = {
             commonTab: string[],
             allTab: string[],
         },
+        azSmallTab: string[],
+        azBigTab: string[],
+        numbersTab: string[],
     },
     dom: {
         azSmall: HTMLElement
@@ -22,6 +25,8 @@ type CoreT = {
         noneSpecials: HTMLElement
         lengthValue: HTMLElement
         lengthInput: HTMLInputElement
+        generatePassword: HTMLElement
+        password: HTMLElement
     },
     events: EventsT | null
 }
@@ -36,12 +41,15 @@ const core = (function () {
             azBig: 'QWERTYUIOPASDFGHJKLZXCVBNM',
             numbers: '1234567890',
             specials: {
-                all: '!@#$%^&*()-=_+[]{}<>,.;:\'"\\|\`~/?',
+                all: '!@#$%^&*()-=_+[]{}\<\>,.;:\'"\\|\`~/?',
                 common: '!@#$%^&*()-=_+[]{}<>,.;:',
                 chosen: [],
                 commonTab: [],
                 allTab: [],
             },
+            azSmallTab: [],
+            azBigTab: [],
+            numbersTab: [],
         },
         dom: {
             azSmall: byId('az-small'),
@@ -53,8 +61,20 @@ const core = (function () {
             noneSpecials: byId('none-specials'),
             lengthValue: byId('length-value'),
             lengthInput: byId('range-input') as HTMLInputElement,
+            generatePassword: byId('generate'),
+            password: byId('password'),
         },
         events: null,
+    }
+
+    for (let i = 0; i < res.data.azSmall.length; ++i) {
+        res.data.azSmallTab[i] = res.data.azSmall[i]
+    }
+    for (let i = 0; i < res.data.azBig.length; ++i) {
+        res.data.azBigTab[i] = res.data.azBig[i]
+    }
+    for (let i = 0; i < res.data.numbers.length; ++i) {
+        res.data.numbersTab[i] = res.data.numbers[i]
     }
 
     for (let i = 0; i < res.data.specials.all.length; ++i) {
