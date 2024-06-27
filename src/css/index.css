@@ -22,6 +22,7 @@ button {
     padding: 3px 12px;
     border-radius: var(--separator_small);
     margin: 0 3px;
+    cursor: pointer;
 }
 
 .btn-on-off {

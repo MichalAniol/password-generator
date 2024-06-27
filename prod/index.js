@@ -14,7 +14,7 @@ const setConsole = () => (function () {
         'margin: 10px 0',
         'padding: 10px 0 15px 0'
     ].join(';');
-    console.log('%c👉👈', styles);
+    console.log('%c👉Password Generator👈', styles);
     let styles2 = [
         'background: linear-gradient(169deg, #f60707 0%, #ffd600 38%, #edff00 51%, #c4ed18 62%, #00ff19 100%)',
         'border: 1px solid #3E0E02',
@@ -202,6 +202,8 @@ const core = (function () {
             message: byId('message'),
             generatePassword: byId('generate'),
             password: byId('password'),
+            copy: byId('copy'),
+            afterCopy: byId('after-copy'),
         },
         events: null,
         validation: null,
@@ -491,6 +493,24 @@ const getEvents = () => (function () {
         const password = generate().getPassword();
         core.dom.password.innerHTML = password;
     };
+    const CopyToClipboard = () => {
+        if (window.getSelection) {
+            if (core.dom.password.innerHTML.length === 0)
+                return;
+            const range = document.createRange();
+            range.selectNode(core.dom.password);
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            setTimeout(() => {
+                range.selectNode(core.dom.afterCopy);
+                window.getSelection().addRange(range);
+            }, 30);
+            core.dom.copy.innerHTML = 'c o p i e d &nbsp; ! ! !';
+            setTimeout(() => {
+                core.dom.copy.innerHTML = 'copy';
+            }, 500);
+        }
+    };
     const result = {
         azSmallClick,
         azBigClick,
@@ -501,6 +521,7 @@ const getEvents = () => (function () {
         specialNoneClick,
         lengthInput,
         generatePasswordBtnClick,
+        CopyToClipboard,
     };
     return result;
 }());
@@ -562,6 +583,7 @@ const init = () => (function () {
     add(core.dom.lengthInput, 'input', core.events.lengthInput(core.dom.lengthValue));
     core.dom.lengthValue.innerHTML = lengthData;
     add(core.dom.generatePassword, 'click', core.events.generatePasswordBtnClick);
+    add(core.dom.copy, 'click', core.events.CopyToClipboard);
     core.validation();
 }());
 (function () {
