@@ -20,6 +20,7 @@
         "src/storage.ts",
         "src/dom.ts",
         "src/core.ts",
+        "src/program/validation.ts",
         "src/program/generator.ts",
         "src/program/events.ts",
         "src/program/dom.ts",

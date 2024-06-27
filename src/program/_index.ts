@@ -5,6 +5,8 @@
         setConsole()
 
         core.events = getEvents()
+        core.validation = validation().setMessage
+
         init()
     })
 }())

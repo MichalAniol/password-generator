@@ -24,6 +24,8 @@ const getEvents = () => (function () {
         target.style.backgroundColor = data === checked.no ? 'var(--on_second_color)' : 'var(--background_color)'
 
         core.store.set(storeName, newData)
+
+        core.validation()
     }
 
     const azSmallClick = change(core.store.names.azSmall)
@@ -42,6 +44,8 @@ const getEvents = () => (function () {
         const storeData = core.store.get(core.store.names.specials)
         storeData[num] = newData
         core.store.set(core.store.names.specials, storeData)
+
+        core.validation()
     }
 
     const specialAllClick = () => {
@@ -52,6 +56,8 @@ const getEvents = () => (function () {
             elem.style.backgroundColor = 'var(--on_second_color)'
         })
         core.store.set(core.store.names.specials, storeData)
+
+        core.validation()
     }
 
     const specialCommonClick = () => {
@@ -67,6 +73,8 @@ const getEvents = () => (function () {
             elem.style.backgroundColor = state ? 'var(--on_second_color)' : 'var(--background_color)'
         })
         core.store.set(core.store.names.specials, storeData)
+
+        core.validation()
     }
 
     const specialNoneClick = () => {
@@ -77,6 +85,8 @@ const getEvents = () => (function () {
             elem.style.backgroundColor = 'var(--background_color)'
         })
         core.store.set(core.store.names.specials, storeData)
+
+        core.validation()
     }
 
     const lengthInput = (elem: HTMLElement) => (event: Event) => {
@@ -84,6 +94,8 @@ const getEvents = () => (function () {
         elem.innerHTML = target.value
 
         core.store.set(core.store.names.length, Number(target.value))
+
+        core.validation()
     }
 
     const generatePasswordBtnClick = () => {
