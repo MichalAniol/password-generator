@@ -123,6 +123,11 @@ input[type="range"]:focus::-moz-range-thumb {
     outline-offset: 0.125rem;
 }
 
+.message {
+    font-family: var(--italian_font);
+    font-size: var(--font_size);
+}
+
 .password {
     min-width: 500px;
     height: 70px;

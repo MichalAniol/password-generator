@@ -41,4 +41,6 @@ const init = () => (function () {
 
     // generatePassword
     add(core.dom.generatePassword, 'click', core.events.generatePasswordBtnClick)
+
+    core.validation()
 }())

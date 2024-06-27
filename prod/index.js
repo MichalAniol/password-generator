@@ -179,7 +179,7 @@ const core = (function () {
             azBig: 'QWERTYUIOPASDFGHJKLZXCVBNM',
             numbers: '1234567890',
             specials: {
-                all: '!@#$%^&*()-=_+[]{}\<\>,.;:\'"\\|\`~/?',
+                all: '!@#$%^&*()-=_+[]{}<>,.;:\'"\\|\`~/?',
                 common: '!@#$%^&*()-=_+[]{}<>,.;:',
                 chosen: [],
                 commonTab: [],
@@ -199,10 +199,12 @@ const core = (function () {
             noneSpecials: byId('none-specials'),
             lengthValue: byId('length-value'),
             lengthInput: byId('range-input'),
+            message: byId('message'),
             generatePassword: byId('generate'),
             password: byId('password'),
         },
         events: null,
+        validation: null,
     };
     for (let i = 0; i < res.data.azSmall.length; ++i) {
         res.data.azSmallTab[i] = res.data.azSmall[i];
@@ -220,6 +222,97 @@ const core = (function () {
         res.data.specials.commonTab[i] = res.data.specials.common[i];
     }
     return res;
+}());
+const validation = () => (function () {
+    const ratingTabs = [
+        [64, 64, 64, 64],
+        [7, 15, 20, 24],
+        [5, 10, 14, 17],
+        [4, 9, 12, 14],
+        [3, 8, 11, 14],
+        [3, 8, 11, 13],
+    ];
+    const ratingNames = [
+        'bad',
+        'still bad',
+        'ok',
+        'good',
+        'very good'
+    ];
+    const raringColors = [
+        '#a60000',
+        '#c17200',
+        '#ccd200',
+        '#93c400',
+        '#12c000',
+    ];
+    const ratingClassification = () => {
+        const azSmall = core.store.get(core.store.names.azSmall);
+        const azBig = core.store.get(core.store.names.azBig);
+        const numbers = core.store.get(core.store.names.numbers);
+        const numberNormal = (azSmall === checked.yes ? 1 : 0) + (azBig === checked.yes ? 1 : 0) + (numbers === checked.yes ? 1 : 0);
+        const specials = core.store.get(core.store.names.specials);
+        let numberSpecial = 0;
+        specials.forEach((s) => {
+            if (s === checked.yes)
+                numberSpecial++;
+        });
+        if (numberNormal === 0 && numberSpecial === 0)
+            return -1;
+        if (numberNormal === 0 && numberSpecial < 10)
+            return 0;
+        if (numberNormal === 1 && numbers === checked.yes && numberSpecial < 10)
+            return 1;
+        if (numberNormal === 0 && numberSpecial >= 10 && numberSpecial < 24)
+            return 1;
+        if (numberNormal === 1 && (azSmall === checked.yes || azBig === checked.yes) && numberSpecial < 10)
+            return 2;
+        if (numberNormal === 0 && numberSpecial >= 24)
+            return 2;
+        if (numberNormal === 2 && numberSpecial < 10)
+            return 3;
+        if (numberNormal === 1 && numberSpecial >= 10)
+            return 3;
+        if (numberNormal === 3 && numberSpecial < 10)
+            return 4;
+        if (numberNormal === 2 && numberSpecial >= 10)
+            return 4;
+        if (numberNormal === 3 && numberSpecial >= 10)
+            return 5;
+        return 0;
+    };
+    const getMessage = () => {
+        const numberRatingTab = ratingClassification();
+        let result;
+        if (numberRatingTab === -1) {
+            result = {
+                message: 'I don\'t have anything to create a password with',
+                color: '#a60097',
+            };
+            return result;
+        }
+        const ratingTab = ratingTabs[numberRatingTab];
+        const length = core.store.get(core.store.names.length);
+        let rating = 0;
+        ratingTab.forEach((r) => {
+            if (length > r)
+                rating++;
+        });
+        result = {
+            message: `this password is ${ratingNames[rating]}`,
+            color: raringColors[rating],
+        };
+        return result;
+    };
+    const setMessage = () => {
+        const data = getMessage();
+        core.dom.message.innerHTML = data.message;
+        core.dom.message.style.color = data.color;
+    };
+    const result = {
+        setMessage
+    };
+    return result;
 }());
 const generate = () => (function () {
     const getNumber = (check) => check === checked.yes ? 1 : 0;
@@ -339,6 +432,7 @@ const getEvents = () => (function () {
         setAttribute(target, 'data-num', newData);
         target.style.backgroundColor = data === checked.no ? 'var(--on_second_color)' : 'var(--background_color)';
         core.store.set(storeName, newData);
+        core.validation();
     };
     const azSmallClick = change(core.store.names.azSmall);
     const azBigClick = change(core.store.names.azBig);
@@ -352,6 +446,7 @@ const getEvents = () => (function () {
         const storeData = core.store.get(core.store.names.specials);
         storeData[num] = newData;
         core.store.set(core.store.names.specials, storeData);
+        core.validation();
     };
     const specialAllClick = () => {
         const storeData = [];
@@ -361,6 +456,7 @@ const getEvents = () => (function () {
             elem.style.backgroundColor = 'var(--on_second_color)';
         });
         core.store.set(core.store.names.specials, storeData);
+        core.validation();
     };
     const specialCommonClick = () => {
         const storeData = [];
@@ -373,6 +469,7 @@ const getEvents = () => (function () {
             elem.style.backgroundColor = state ? 'var(--on_second_color)' : 'var(--background_color)';
         });
         core.store.set(core.store.names.specials, storeData);
+        core.validation();
     };
     const specialNoneClick = () => {
         const storeData = [];
@@ -382,11 +479,13 @@ const getEvents = () => (function () {
             elem.style.backgroundColor = 'var(--background_color)';
         });
         core.store.set(core.store.names.specials, storeData);
+        core.validation();
     };
     const lengthInput = (elem) => (event) => {
         const target = event.target;
         elem.innerHTML = target.value;
         core.store.set(core.store.names.length, Number(target.value));
+        core.validation();
     };
     const generatePasswordBtnClick = () => {
         const password = generate().getPassword();
@@ -463,12 +562,14 @@ const init = () => (function () {
     add(core.dom.lengthInput, 'input', core.events.lengthInput(core.dom.lengthValue));
     core.dom.lengthValue.innerHTML = lengthData;
     add(core.dom.generatePassword, 'click', core.events.generatePasswordBtnClick);
+    core.validation();
 }());
 (function () {
     getStorage().then((store) => {
         core.store = store;
         setConsole();
         core.events = getEvents();
+        core.validation = validation().setMessage;
         init();
     });
 }());

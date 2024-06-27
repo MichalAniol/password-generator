@@ -25,10 +25,12 @@ type CoreT = {
         noneSpecials: HTMLElement
         lengthValue: HTMLElement
         lengthInput: HTMLInputElement
+        message: HTMLElement
         generatePassword: HTMLElement
         password: HTMLElement
     },
-    events: EventsT | null
+    events: EventsT | null,
+    validation: () => void | null
 }
 
 const core = (function () {
@@ -41,7 +43,7 @@ const core = (function () {
             azBig: 'QWERTYUIOPASDFGHJKLZXCVBNM',
             numbers: '1234567890',
             specials: {
-                all: '!@#$%^&*()-=_+[]{}\<\>,.;:\'"\\|\`~/?',
+                all: '!@#$%^&*()-=_+[]{}<>,.;:\'"\\|\`~/?',
                 common: '!@#$%^&*()-=_+[]{}<>,.;:',
                 chosen: [],
                 commonTab: [],
@@ -61,10 +63,12 @@ const core = (function () {
             noneSpecials: byId('none-specials'),
             lengthValue: byId('length-value'),
             lengthInput: byId('range-input') as HTMLInputElement,
+            message: byId('message'),
             generatePassword: byId('generate'),
             password: byId('password'),
         },
         events: null,
+        validation: null,
     }
 
     for (let i = 0; i < res.data.azSmall.length; ++i) {
