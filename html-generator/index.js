@@ -30,7 +30,7 @@ const getZero = num => num < 10 ? '0' + num : num
 // }
 // watchHtml()
 
-const MAIN_REALIZE_FILE = 'prod\\index.html'
+const MAIN_REALIZE_FILE = 'doc\\index.html'
 
 const info = (name) => {
     const time = new Date()

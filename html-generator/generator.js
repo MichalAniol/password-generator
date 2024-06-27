@@ -76,7 +76,7 @@ const start = () => {
         const metaTag = $('<link>').attr('rel', 'stylesheet').attr('type', 'text/css').attr('href', './index.css')
         $('head').append(metaTag)
 
-        oof.save('prod/index.css', css)
+        oof.save('doc/index.css', css)
 
     }
 
@@ -87,7 +87,7 @@ const start = () => {
     aggregateFiles('src', $)
     aggregateCss('src', $)
 
-    oof.save('prod/index.html', $.html())
+    oof.save('doc/index.html', $.html())
     console.log(`Saved!!! file: ${pathFile}`)
 }
 

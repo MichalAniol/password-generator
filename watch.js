@@ -6,7 +6,7 @@ const PROXY_PORT = 3033
 
 browserSync.init({
     server: {
-        baseDir: "./prod",
+        baseDir: "./doc",
     },
     ui: {
         port: PROXY_PORT
@@ -17,9 +17,9 @@ browserSync.init({
 
 const watchHtml = () => {
     watch([
-        'prod/*.html',
-        'prod/*.css',
-        'prod/*.js',
+        'doc/*.html',
+        'doc/*.css',
+        'doc/*.js',
     ], () => {
         const now = new Date(Date.now());
         const getZero = num => num < 10 ? '0' + num : num;
